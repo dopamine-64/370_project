@@ -1,0 +1,34 @@
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(20),
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE properties (
+    property_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    address VARCHAR(255) NOT NULL,
+    rent DECIMAL(10,2) NOT NULL,
+    available_from DATE,
+    image VARCHAR(255),
+    posted_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+
+Instructions:
+1. Open xampp and start Apache and MySQL.
+2. Now click the MySQL Admin, it will open localhost in your browser.
+3. Create a new database named tolet_db.
+4. After that, click the sql tab and paste the code above and press go.
+5. This will create the tables.
+6. Now open the xampp folder, go to htdocs and create a new folder named To_let website.
+7. Download all the files and move them to To_let website (C:\xampp\htdocs\To_let Website).
+8. To open a flie in browser, copy this (http://localhost/To_let%20Website/index.php) and paste this in your browser.
+9. Now you can browse the website.
