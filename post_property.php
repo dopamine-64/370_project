@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         move_uploaded_file($_FILES["image"]["tmp_name"], $image_path);
     }
 
-    $stmt = $conn->prepare("INSERT INTO rooms (user_id, title, description, address, rent, available_from, image) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO properties (user_id, title, description, address, rent, available_from, image) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("isssdss", $user_id, $title, $description, $address, $rent, $available_from, $image_path);
 
     if ($stmt->execute()) {
