@@ -6,7 +6,9 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT properties.*, users.name AS posted_by FROM properties JOIN users ON properties.user_id = users.user_id ORDER BY posted_on DESC";
+$sql = "SELECT properties.*, users.name AS posted_by FROM properties 
+        JOIN users ON properties.user_id = users.user_id 
+        ORDER BY posted_on DESC";
 $result = $conn->query($sql);
 ?>
 
@@ -46,16 +48,23 @@ $result = $conn->query($sql);
         .property-image {
             flex: 1;
             max-width: 250px;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            border-radius: 10px;
         }
 
         .property-image img {
             width: 100%;
-            border-radius: 10px;
+            height: 100%;
             object-fit: cover;
+            border-radius: 10px;
         }
 
         .property-details {
             flex: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .property-details h3 {
@@ -76,37 +85,57 @@ $result = $conn->query($sql);
 
         .button-group {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
             gap: 10px;
-            margin-top: 10px;
         }
 
-        .buy-btn,
-        .edit-btn {
-            flex: 1;
-            padding: 10px;
-            text-align: center;
+        .left-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-btn,
+        .delete-btn,
+        .rent-btn {
+            height: 48px;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-weight: bold;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .buy-btn {
+        .edit-btn {
             background-color: #007bff;
-            color: white;
         }
 
         .edit-btn:hover {
             background-color: #0056b3;
         }
 
-        .edit-btn {
-            background-color: #28a745;
-            color: white;
+        .delete-btn {
+            background-color: #dc3545;
         }
 
-        .buy-btn:hover {
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .rent-btn {
+            background-color: #28a745;
+            font-size: 16px;
+            width: 300px;
+        }
+
+        .rent-btn:hover {
             background-color: #218838;
         }
 
@@ -116,7 +145,18 @@ $result = $conn->query($sql);
             }
 
             .button-group {
-                flex-direction: column;
+                flex-direction: column-reverse;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .rent-btn {
+                width: 100%;
+            }
+
+            .left-buttons {
+                justify-content: space-between;
+                width: 100%;
             }
         }
     </style>
@@ -133,27 +173,35 @@ $result = $conn->query($sql);
                     <?php if (!empty($row['image']) && file_exists($row['image'])): ?>
                         <img src="<?php echo $row['image']; ?>" alt="Property Image">
                     <?php else: ?>
-                        <img src="https://via.placeholder.com/250x180?text=No+Image" alt="No Image">
+                        <img src="https://via.placeholder.com/250?text=No+Image" alt="No Image">
                     <?php endif; ?>
                 </div>
                 <div class="property-details">
-                    <h3><?php echo htmlspecialchars($row['title']); ?></h3>
-                    <p><?php echo nl2br(htmlspecialchars($row['description'])); ?></p>
-                    <p><strong>Address:</strong> <?php echo htmlspecialchars($row['address']); ?></p>
-                    <p class="rent"><strong>Rent:</strong> BDT <?php echo number_format($row['rent']); ?></p>
-                    <p><strong>Available From:</strong> <?php echo htmlspecialchars($row['available_from']); ?></p>
-                    <p><strong>Posted By:</strong> <?php echo htmlspecialchars($row['posted_by']); ?></p>
-                    <p><strong>Posted On:</strong> <?php echo date('F j, Y', strtotime($row['posted_on'])); ?></p>
+                    <div>
+                        <h3><?php echo htmlspecialchars($row['title']); ?></h3>
+                        <p><?php echo nl2br(htmlspecialchars($row['description'])); ?></p>
+                        <p><strong>Address:</strong> <?php echo htmlspecialchars($row['address']); ?></p>
+                        <p class="rent"><strong>Rent:</strong> BDT <?php echo number_format($row['rent']); ?></p>
+                        <p><strong>Available From:</strong> <?php echo htmlspecialchars($row['available_from']); ?></p>
+                        <p><strong>Posted By:</strong> <?php echo htmlspecialchars($row['posted_by']); ?></p>
+                        <p><strong>Posted On:</strong> <?php echo date('F j, Y', strtotime($row['posted_on'])); ?></p>
+                    </div>
 
                     <div class="button-group">
-                        <form action="buy_property.php" method="POST" style="flex: 1;">
-                            <input type="hidden" name="property_id" value="<?php echo $row['property_id']; ?>">
-                            <button type="submit" class="buy-btn">Edit</button>
-                        </form>
+                        <div class="left-buttons">
+                            <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $row['user_id']): ?>
+                                <a href="edit_property.php?property_id=<?php echo $row['property_id']; ?>" class="edit-btn">Edit</a>
+                                <form action="delete_property.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this property?');">
+                                    <input type="hidden" name="property_id" value="<?php echo $row['property_id']; ?>">
+                                    <button type="submit" class="delete-btn">Delete</button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
 
-                        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $row['user_id']): ?>
-                            <a href="edit_property.php?property_id=<?php echo $row['property_id']; ?>" class="edit-btn">Buy</a>
-                        <?php endif; ?>
+                        <form action="rent_property.php" method="POST" style="margin-left: auto;">
+                            <input type="hidden" name="property_id" value="<?php echo $row['property_id']; ?>">
+                            <button type="submit" class="rent-btn">Rent</button>
+                        </form>
                     </div>
                 </div>
             </div>
