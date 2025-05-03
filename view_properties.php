@@ -43,6 +43,34 @@ $result = $conn->query($sql);
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             display: flex;
             gap: 15px;
+            position: relative;
+        }
+
+        .status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .status.active {
+            background-color: #28a745;
+        }
+
+        .status.pending {
+            background-color: #ff9f00;
+        }
+
+        .status.inactive {
+            background-color: #dc3545;
         }
 
         .property-image {
@@ -111,7 +139,17 @@ $result = $conn->query($sql);
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
+        .rent-btn:hover, .edit-btn:hover, .delete-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05); /* Slightly enlarge button on hover for interaction feedback */
+        }
+
+        .rent-btn:active, .edit-btn:active, .delete-btn:active {
+            transform: scale(1); /* Return to original size when clicked */
+        }
+
 
         .edit-btn { background-color: #007bff; }
         .edit-btn:hover { background-color: #0056b3; }
@@ -123,9 +161,33 @@ $result = $conn->query($sql);
         .rent-btn:hover { background-color: #218838; }
 
         select.applicants-dropdown {
+            padding: 12px 15px;
+            width: 100%;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            color: #333;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        select.applicants-dropdown:hover {
+            border-color: #007bff;
+        }
+
+        select.applicants-dropdown:focus {
+            border-color: #28a745;
+            background-color: #eef8ea;
+        }
+
+        select.applicants-dropdown option {
             padding: 10px;
-            width: 300px;
-            font-size: 14px;
+        }
+
+        select.applicants-dropdown option:hover {
+            background-color: #007bff;
+            color: white;
         }
 
         @media screen and (max-width: 768px) {
@@ -150,6 +212,13 @@ $result = $conn->query($sql);
             }
         }
     </style>
+    <script>
+        function confirmTenantSelection(form) {
+            if (confirm("Are you sure you want to assign this tenant? This will make the post inactive.")) {
+                form.submit();
+            }
+        }
+    </script>
 </head>
 <body>
 
@@ -158,6 +227,22 @@ $result = $conn->query($sql);
 
     <?php if ($result->num_rows > 0): ?>
         <?php while ($row = $result->fetch_assoc()): ?>
+            <?php
+            $property_id = $row['property_id'];
+            $owner_id = $row['user_id'];
+
+            // Determine status
+            $status_query = $conn->query("SELECT 
+                SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) AS active_count,
+                COUNT(*) AS total_count
+            FROM booking_requests WHERE property_id = $property_id");
+            $status_row = $status_query->fetch_assoc();
+            $status = "active";
+            if ($status_row['total_count'] > 0) {
+                $status = ($status_row['active_count'] > 0) ? "inactive" : "pending";
+            }
+            ?>
+
             <div class="property-card">
                 <div class="property-image">
                     <?php if (!empty($row['image']) && file_exists($row['image'])): ?>
@@ -175,6 +260,12 @@ $result = $conn->query($sql);
                         <p><strong>Available From:</strong> <?php echo htmlspecialchars($row['available_from']); ?></p>
                         <p><strong>Posted By:</strong> <?php echo htmlspecialchars($row['posted_by']); ?></p>
                         <p><strong>Posted On:</strong> <?php echo date('F j, Y', strtotime($row['posted_on'])); ?></p>
+
+                        <div class="status <?php echo $status; ?>">
+                            <?php echo ucfirst($status); ?>
+                        </div>
+
+
                     </div>
 
                     <div class="button-group">
@@ -188,33 +279,46 @@ $result = $conn->query($sql);
                             <?php endif; ?>
                         </div>
 
-                        <!-- Booking Request or Applicants Dropdown -->
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <?php if ($_SESSION['user_id'] == $row['user_id']): ?>
-                                <!-- Owner sees applicants -->
                                 <?php
-                                $property_id = $row['property_id'];
-                                $app_query = "SELECT users.name FROM booking_requests 
+                                $app_query = "SELECT booking_requests.*, users.name 
+                                              FROM booking_requests 
                                               JOIN users ON booking_requests.user_id = users.user_id 
                                               WHERE booking_requests.property_id = $property_id";
                                 $app_result = $conn->query($app_query);
                                 ?>
-                                <select class="applicants-dropdown">
-                                    <option disabled selected>Applicants for this property</option>
-                                    <?php if ($app_result->num_rows > 0): ?>
-                                        <?php while ($app = $app_result->fetch_assoc()): ?>
-                                            <option><?php echo htmlspecialchars($app['name']); ?></option>
-                                        <?php endwhile; ?>
-                                    <?php else: ?>
-                                        <option>No applicants yet</option>
-                                    <?php endif; ?>
-                                </select>
+                                <?php if ($status !== 'inactive' && $app_result->num_rows > 0): ?>
+                                    <form method="POST" action="confirm_applicant.php" onsubmit="event.preventDefault(); confirmTenantSelection(this);">
+                                        <input type="hidden" name="property_id" value="<?php echo $property_id; ?>">
+                                        <select name="selected_user_id" class="applicants-dropdown" required>
+                                            <option disabled selected>Select a tenant</option>
+                                            <?php while ($app = $app_result->fetch_assoc()): ?>
+                                                <option value="<?php echo $app['user_id']; ?>">
+                                                    <?php echo htmlspecialchars($app['name']) . " ({$app['user_id']})"; ?>
+                                                </option>
+                                            <?php endwhile; ?>
+                                        </select>
+                                        <button type="submit" class="rent-btn" style="height: 45px; font-size: 16px; padding: 0 12px;">Confirm Tenant</button>
+                                    </form>
+                                <?php elseif ($status === 'inactive'): ?>
+                                    <p><em>Tenant already assigned.</em></p>
+                                <?php else: ?>
+                                    <p><em>No applicants yet.</em></p>
+                                <?php endif; ?>
                             <?php else: ?>
-                                <!-- Not owner, show apply button -->
-                                <form action="booking_requests.php" method="POST" style="margin-left: auto;">
-                                    <input type="hidden" name="property_id" value="<?php echo $row['property_id']; ?>">
-                                    <button type="submit" class="rent-btn">Apply for Tenant</button>
-                                </form>
+                                <?php
+                                $user_id = $_SESSION['user_id'];
+                                $check = $conn->query("SELECT * FROM booking_requests WHERE user_id = $user_id AND property_id = $property_id");
+                                ?>
+                                <?php if ($check->num_rows == 0): ?>
+                                    <form method="POST" action="booking_requests.php" style="margin-left: auto;">
+                                        <input type="hidden" name="property_id" value="<?php echo $row['property_id']; ?>">
+                                        <button type="submit" class="rent-btn">Apply for Tenant</button>
+                                    </form>
+                                <?php else: ?>
+                                    <p style="margin-left: auto;"><em>You have already applied.</em></p>
+                                <?php endif; ?>
                             <?php endif; ?>
                         <?php endif; ?>
                     </div>
