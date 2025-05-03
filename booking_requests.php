@@ -26,25 +26,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         echo "You have already applied for this property.";
     } else {
-        $insert_sql = "INSERT INTO booking_requests (property_id, user_id) VALUES (?, ?)";
+        $insert_sql = "INSERT INTO booking_requests (property_id, user_id, status) VALUES (?, ?, 'pending')";
         $stmt = $conn->prepare($insert_sql);
         $stmt->bind_param("ii", $property_id, $user_id);
         if ($stmt->execute()) {
-            echo "Application submitted successfully.";
+            // Redirect to avoid resubmission
+            header("Location: view_properties.php?applied=success");
+            exit;
         } else {
             echo "Error: " . $conn->error;
         }
     }
     $stmt->close();
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['property_id'])) {
     // Fetch all applicants for a property
     $property_id = $_GET['property_id'];
 
-    $sql = "SELECT users.name, users.email, booking_requests.requested_on
+    $sql = "SELECT users.name, users.email, booking_requests.applied_at
             FROM booking_requests
             JOIN users ON booking_requests.user_id = users.user_id
             WHERE booking_requests.property_id = ?
-            ORDER BY booking_requests.requested_on DESC";
+            ORDER BY booking_requests.applied_at DESC";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $property_id);
@@ -55,12 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         echo "<ul>";
         while ($row = $result->fetch_assoc()) {
-            echo "<li><strong>{$row['name']}</strong> ({$row['email']}) - " . date('F j, Y, g:i a', strtotime($row['requested_on'])) . "</li>";
+            echo "<li><strong>" . htmlspecialchars($row['name']) . "</strong> (" . htmlspecialchars($row['email']) . ") - " . date('F j, Y, g:i a', strtotime($row['applied_at'])) . "</li>";
         }
         echo "</ul>";
     } else {
         echo "No applicants yet.";
     }
+
     $stmt->close();
 } else {
     echo "Invalid request.";
