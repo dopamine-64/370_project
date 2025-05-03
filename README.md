@@ -24,6 +24,17 @@ CREATE TABLE properties (
 );
 
 
+CREATE TABLE booking_requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    property_id INT NOT NULL,
+    status ENUM('pending', 'active', 'inactive') DEFAULT 'pending',
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (property_id) REFERENCES properties(property_id) ON DELETE CASCADE
+);
+
+
 Instructions:
 1. Open xampp and start Apache and MySQL.
 2. Now click the MySQL Admin, it will open localhost in your browser.
