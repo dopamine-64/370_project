@@ -12,6 +12,7 @@ if ($conn->connect_error) {
 
 $user_id = $_SESSION['user_id'];
 $message = "";
+$updated = false;
 
 // Fetch current user info
 $stmt = $conn->prepare("SELECT name, email, phone FROM users WHERE user_id = ?");
@@ -32,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         $message = "Profile updated successfully!";
+        $updated = true;
         $name = $new_name;
         $email = $new_email;
         $phone = $new_phone;
@@ -47,67 +49,127 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Update Profile</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #eef2f7;
-            padding: 20px;
+            background: url('https://images.unsplash.com/photo-1580587771525-78b9dba3b914?fit=crop&w=1600&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
         }
+
         .container {
-            background: white;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
             width: 400px;
-            margin: auto;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            margin: 80px auto;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.4);
         }
+
         h2 {
             text-align: center;
-            color: #007bff;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6);
         }
+
+        label {
+            display: block;
+            margin: 12px 0 6px;
+            color: #ccc;
+        }
+
         input {
             width: 100%;
             padding: 10px;
-            margin: 10px 0 15px;
-            border: 1px solid #ccc;
+            border: none;
             border-radius: 6px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
         }
+
+        input::placeholder {
+            color: #aaa;
+        }
+
         button {
             width: 100%;
-            background: #007bff;
+            margin-top: 20px;
+            background: #17a2b8;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 12px;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
+            transition: 0.3s;
         }
+
         button:hover {
-            background: #0056b3;
+            background: #138496;
         }
+
         .message {
             text-align: center;
-            color: green;
+            background: #28a745;
+            padding: 10px;
+            border-radius: 6px;
+            color: white;
             font-weight: bold;
-            margin-top: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 0;
         }
     </style>
 </head>
 <body>
-
+<div class="overlay"></div>
 <div class="container">
     <h2>Update Your Profile</h2>
-    <?php if ($message): ?>
-        <p class="message"><?php echo $message; ?></p>
+
+    <?php if ($updated): ?>
+        <div class="message show" id="popupMessage"><?php echo $message; ?></div>
+        <script>
+            setTimeout(function () {
+                window.location.href = 'dashboard.php';
+            }, 2500);
+        </script>
+    <?php elseif ($message): ?>
+        <div class="message" style="background: #dc3545;"><?php echo $message; ?></div>
     <?php endif; ?>
+
     <form method="POST">
-        <label>Name</label>
-        <input type="text" name="name" value="<?php echo htmlspecialchars($name); ?>" required>
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" required value="<?php echo htmlspecialchars($name); ?>">
 
-        <label>Email</label>
-        <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required value="<?php echo htmlspecialchars($email); ?>">
 
-        <label>Phone</label>
-        <input type="text" name="phone" value="<?php echo htmlspecialchars($phone); ?>" required>
+        <label for="phone">Phone</label>
+        <input type="text" name="phone" id="phone" required value="<?php echo htmlspecialchars($phone); ?>">
 
         <button type="submit">Update Profile</button>
     </form>
