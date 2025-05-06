@@ -43,55 +43,116 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Post a Property</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            padding: 20px;
+            background: url('https://images.unsplash.com/photo-1580587771525-78b9dba3b914?fit=crop&w=1600&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
         }
+
         .container {
-            background: white;
-            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
             width: 500px;
-            margin: auto;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            margin: 50px auto;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.4);
         }
+
         h2 {
             text-align: center;
-            color: #007bff;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6);
         }
-        input, textarea, select {
+
+        label {
+            display: block;
+            margin: 12px 0 6px;
+            color: #ccc;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="file"],
+        textarea {
             width: 100%;
             padding: 10px;
-            margin: 8px 0 15px 0;
-            border: 1px solid #ccc;
+            border: none;
             border-radius: 6px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
         }
+
+        input::file-selector-button {
+            padding: 8px 12px;
+            border: none;
+            background: #17a2b8;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        input[type="file"] {
+            color: #ccc;
+        }
+
         button {
             background: #28a745;
             color: white;
-            padding: 10px 15px;
+            padding: 12px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             width: 100%;
+            font-weight: bold;
+            margin-top: 15px;
         }
+
         button:hover {
             background: #218838;
         }
+
         .message {
             text-align: center;
-            color: green;
+            background: #28a745;
+            padding: 10px;
+            border-radius: 6px;
+            color: white;
             font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 115%;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 0;
         }
     </style>
 </head>
 <body>
 
+<div class="overlay"></div>
 <div class="container">
     <h2>Post a Property</h2>
     <?php if ($message): ?>
-        <p class="message"><?php echo $message; ?></p>
+        <div class="message"><?php echo $message; ?></div>
     <?php endif; ?>
     <form method="POST" enctype="multipart/form-data">
         <label>Property Title</label>
