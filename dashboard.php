@@ -38,7 +38,7 @@ $stmt->close();
         }
 
         body {
-            background: url('https://images.unsplash.com/photo-1580587771525-78b9dba3b914?fit=crop&w=1600&q=80') no-repeat center center fixed;
+            background: url('https://static.vecteezy.com/system/resources/previews/002/136/452/non_2x/street-city-building-construction-cityscape-skyline-business-illustration-vector.jpg') no-repeat center center fixed;
             background-size: cover;
             position: relative;
             color: white;
