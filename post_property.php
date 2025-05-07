@@ -144,6 +144,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background: rgba(0, 0, 0, 0.5);
             z-index: 0;
         }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #ccc;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+        
     </style>
 </head>
 <body>
@@ -153,6 +167,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h2>Post a Property</h2>
     <?php if ($message): ?>
         <div class="message"><?php echo $message; ?></div>
+        <script>
+            setTimeout(function () {
+                window.location.href = 'dashboard.php';
+            }, 1000);
+        </script>
     <?php endif; ?>
     <form method="POST" enctype="multipart/form-data">
         <label>Property Title</label>
@@ -175,6 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <button type="submit">Post Property</button>
     </form>
+    <a href="dashboard.php" class="back-link">← Back to Dashboard</a>
 </div>
 
 </body>
