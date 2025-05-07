@@ -143,6 +143,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background: rgba(0, 0, 0, 0.6);
             z-index: 0;
         }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #ccc;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 <body>
@@ -155,7 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <script>
             setTimeout(function () {
                 window.location.href = 'dashboard.php';
-            }, 2500);
+            }, 1000);
         </script>
     <?php elseif ($message): ?>
         <div class="message" style="background: #dc3545;"><?php echo $message; ?></div>
@@ -173,6 +187,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <button type="submit">Update Profile</button>
     </form>
+    <a href="dashboard.php" class="back-link">← Back to Dashboard</a>
 </div>
 
 </body>
