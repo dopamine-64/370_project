@@ -24,7 +24,6 @@ $result = $conn->query($sql);
             background: url('https://images.unsplash.com/photo-1580587771525-78b9dba3b914?fit=crop&w=1600&q=80') no-repeat center center fixed;
             background-size: cover;
             color: white;
-            position: relative;
         }
 
         body::before {
@@ -34,8 +33,8 @@ $result = $conn->query($sql);
             left: 0;
             height: 100%;
             width: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(3px);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
             z-index: -1;
         }
 
@@ -53,22 +52,24 @@ $result = $conn->query($sql);
         }
 
         .property-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.15);
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 30px;
             display: flex;
+            flex-wrap: wrap;
             gap: 20px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 0 25px rgba(0,0,0,0.5);
             position: relative;
         }
 
         .property-image {
             flex: 1;
+            min-width: 280px;
             max-width: 300px;
-            border-radius: 12px;
+            border-radius: 15px;
             overflow: hidden;
         }
 
@@ -76,22 +77,25 @@ $result = $conn->query($sql);
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 15px;
         }
 
         .property-details {
             flex: 2;
             display: flex;
             flex-direction: column;
+            gap: 6px;
         }
 
         .property-details h3 {
-            margin: 0 0 10px;
             font-size: 24px;
+            margin: 0 0 10px;
         }
 
         .property-details p {
-            margin: 5px 0;
-            font-size: 16px;
+            margin: 2px 0;
+            font-size: 15px;
+            line-height: 1.4;
         }
 
         .rent {
@@ -122,12 +126,6 @@ $result = $conn->query($sql);
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
-            align-items: center;
-        }
-
-        .button-group form,
-        .button-group a {
-            margin: 0;
         }
 
         .edit-btn,
@@ -135,7 +133,7 @@ $result = $conn->query($sql);
         .rent-btn {
             padding: 12px 20px;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-weight: bold;
             font-size: 14px;
             cursor: pointer;
@@ -173,15 +171,14 @@ $result = $conn->query($sql);
         }
 
         .applicants-dropdown {
-            padding: 12px 16px;
-            font-size: 16px;
+            padding: 10px 14px;
+            font-size: 15px;
             border: none;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.8);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
             color: #000;
             width: 100%;
-            max-width: 150px;
-            margin-left: 200px;
+            max-width: 180px;
         }
 
         .applicants-dropdown:focus {
@@ -194,13 +191,13 @@ $result = $conn->query($sql);
                 align-items: center;
             }
 
+            .property-image {
+                max-width: 100%;
+            }
+
             .button-group {
                 flex-direction: column;
                 align-items: stretch;
-            }
-
-            .property-image {
-                max-width: 100%;
             }
         }
     </style>
@@ -265,7 +262,6 @@ $result = $conn->query($sql);
                                 <input type="hidden" name="property_id" value="<?php echo $row['property_id']; ?>">
                                 <button type="submit" class="delete-btn">Delete</button>
                             </form>
-
                             <?php endif; ?>
                         </div>
 
