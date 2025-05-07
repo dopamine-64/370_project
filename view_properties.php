@@ -260,11 +260,12 @@ $result = $conn->query($sql);
                     <div class="button-group">
                         <div class="left-buttons">
                             <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $row['user_id']): ?>
-                                <a href="edit_property.php?property_id=<?php echo $row['property_id']; ?>" class="edit-btn">Edit</a>
-                                <form action="delete_property.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this property?');" style="display:inline;">
-                                    <input type="hidden" name="property_id" value="<?php echo $row['property_id']; ?>">
-                                    <button type="submit" class="delete-btn">Delete</button>
-                                </form>
+                                <a href="edit.php?property_id=<?php echo $row['property_id']; ?>" class="edit-btn">Edit</a>
+                                <form action="delete.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this property?');" style="display:inline;">
+                                <input type="hidden" name="property_id" value="<?php echo $row['property_id']; ?>">
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+
                             <?php endif; ?>
                         </div>
 
