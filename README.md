@@ -34,6 +34,18 @@ CREATE TABLE booking_requests (
     FOREIGN KEY (property_id) REFERENCES properties(property_id) ON DELETE CASCADE
 );
 
+CREATE TABLE messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    property_id INT NOT NULL,
+    message TEXT NOT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (property_id) REFERENCES properties(property_id) ON DELETE CASCADE
+);
+
 
 Instructions:
 1. Open xampp and start Apache and MySQL.
