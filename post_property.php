@@ -194,7 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <button type="submit">Post Property</button>
     </form>
-    <a href="dashboard.php" class="back-link">← Back to Dashboard</a>
+    <a href="dashboard.php" class="back-link">? Back to Dashboard</a>
 </div>
 
 </body>
