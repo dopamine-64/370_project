@@ -117,6 +117,115 @@ $result = $conn->query($sql);
             box-shadow: 0 0 10px rgba(0,0,0,0.4);
         }
 
+        .chat-dropdown {
+            position: relative;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .chat-dropbtn {
+            background-color: rgba(0, 123, 255, 0.8);
+            color: white;
+            padding: 10px 18px;
+            font-size: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            transition: background-color 0.3s ease;
+        }
+
+        .chat-dropbtn:hover {
+            background-color: rgba(0, 123, 255, 1);
+        }
+
+        .chat-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            min-width: 220px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            margin-top: 8px;
+        }
+
+        .chat-dropdown-content a {
+            color: black;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .chat-dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .chat-dropdown-content a:hover {
+            background-color: rgba(0, 123, 255, 0.15);
+            color: #007bff;
+        }
+
+        .chat-dropdown:hover .chat-dropdown-content {
+            display: block;
+        }
+
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        .dropdown-toggle {
+            background-color: #6c63ff;
+            color: white;
+            padding: 12px 18px;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-weight: bold;
+        }
+
+        .dropdown-toggle:hover {
+            background-color: #554dff;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.95);
+            min-width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+            overflow: hidden;
+        }
+
+        .dropdown-menu a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #eee;
+        }
+
+        .dropdown-container:hover .dropdown-menu {
+            display: block;
+        }
+
+
+
         .status.active { background: #28a745; }
         .status.pending { background: #ffc107; color: #000; }
         .status.inactive { background: #dc3545; }
@@ -130,8 +239,9 @@ $result = $conn->query($sql);
 
         .edit-btn,
         .delete-btn,
-        .rent-btn {
-            padding: 12px 20px;
+        .rent-btn,
+        .chat-btn {
+            padding: 10px 18px;
             border: none;
             border-radius: 10px;
             font-weight: bold;
@@ -142,33 +252,17 @@ $result = $conn->query($sql);
             display: inline-block;
         }
 
-        .edit-btn {
-            background-color: #007bff;
-            color: white;
-        }
+        .edit-btn { background-color: #007bff; color: white; }
+        .edit-btn:hover { background-color: #0056b3; }
 
-        .edit-btn:hover {
-            background-color: #0056b3;
-        }
+        .delete-btn { background-color: #dc3545; color: white; }
+        .delete-btn:hover { background-color: #c82333; }
 
-        .delete-btn {
-            background-color: #dc3545;
-            color: white;
-        }
+        .rent-btn { background-color: #28a745; color: white; }
+        .rent-btn:hover { background-color: #218838; }
 
-        .delete-btn:hover {
-            background-color: #c82333;
-        }
-
-        .rent-btn {
-            background-color: #28a745;
-            color: white;
-            font-size: 16px;
-        }
-
-        .rent-btn:hover {
-            background-color: #218838;
-        }
+        .chat-btn { background-color: #17a2b8; color: white; }
+        .chat-btn:hover { background-color: #117a8b; }
 
         .applicants-dropdown {
             padding: 10px 14px;
@@ -181,24 +275,10 @@ $result = $conn->query($sql);
             max-width: 180px;
         }
 
-        .applicants-dropdown:focus {
-            outline: 2px solid #28a745;
-        }
-
         @media screen and (max-width: 768px) {
-            .property-card {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .property-image {
-                max-width: 100%;
-            }
-
-            .button-group {
-                flex-direction: column;
-                align-items: stretch;
-            }
+            .property-card { flex-direction: column; align-items: center; }
+            .property-image { max-width: 100%; }
+            .button-group { flex-direction: column; align-items: stretch; }
         }
     </style>
     <script>
@@ -255,18 +335,31 @@ $result = $conn->query($sql);
                     </div>
 
                     <div class="button-group">
-                        <div class="left-buttons">
-                            <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $row['user_id']): ?>
-                                <a href="edit.php?property_id=<?php echo $row['property_id']; ?>" class="edit-btn">Edit</a>
-                                <form action="delete.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this property?');" style="display:inline;">
-                                <input type="hidden" name="property_id" value="<?php echo $row['property_id']; ?>">
-                                <button type="submit" class="delete-btn">Delete</button>
-                            </form>
-                            <?php endif; ?>
-                        </div>
-
                         <?php if (isset($_SESSION['user_id'])): ?>
-                            <?php if ($_SESSION['user_id'] == $row['user_id']): ?>
+                            <?php if ($_SESSION['user_id'] == $owner_id): ?>
+                                <?php
+                                $app_result->data_seek(0);
+                                if ($app_result->num_rows > 0): ?>
+                                    <div class="dropdown-container">
+                                        <button class="dropdown-toggle">Chat with Applicants ▾</button>
+                                        <div class="dropdown-menu">
+                                            <?php while ($app = $app_result->fetch_assoc()): ?>
+                                                <a href="chat.php?property_id=<?php echo $property_id; ?>&receiver_id=<?php echo $app['user_id']; ?>">
+                                                    <?php echo htmlspecialchars($app['name']) . " ({$app['user_id']})"; ?>
+                                                </a>
+                                            <?php endwhile; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
+                            <?php endif; ?>
+
+                                <a href="edit.php?property_id=<?php echo $property_id; ?>" class="edit-btn">Edit</a>
+                                <form action="delete.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this property?');" style="display:inline;">
+                                    <input type="hidden" name="property_id" value="<?php echo $property_id; ?>">
+                                    <button type="submit" class="delete-btn">Delete</button>
+                                </form>
+
                                 <?php
                                 $app_query = "SELECT booking_requests.*, users.name 
                                               FROM booking_requests 
@@ -287,11 +380,29 @@ $result = $conn->query($sql);
                                         </select>
                                         <button type="submit" class="rent-btn">Confirm Tenant</button>
                                     </form>
+                                    <?php if ($status !== 'inactive' && $app_result->num_rows > 0): ?>
+                                        <div class="chat-dropdown">
+                                            <button class="chat-dropbtn">Chat with Applicants ⬇</button>
+                                            <div class="chat-dropdown-content">
+                                                <?php
+                                                $app_result->data_seek(0); 
+                                                while ($app = $app_result->fetch_assoc()):
+                                                ?>
+                                                    <a href="chat.php?property_id=<?php echo $property_id; ?>&receiver_id=<?php echo $app['user_id']; ?>">
+                                                        <?php echo htmlspecialchars($app['name']) . " ({$app['user_id']})"; ?>
+                                                    </a>
+                                                <?php endwhile; ?>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+
+
                                 <?php elseif ($status === 'inactive'): ?>
                                     <p><em>Tenant already assigned.</em></p>
                                 <?php else: ?>
                                     <p><em>No applicants yet.</em></p>
                                 <?php endif; ?>
+
                             <?php else: ?>
                                 <?php
                                 $user_id = $_SESSION['user_id'];
@@ -299,11 +410,12 @@ $result = $conn->query($sql);
                                 ?>
                                 <?php if ($check->num_rows == 0): ?>
                                     <form method="POST" action="booking_requests.php">
-                                        <input type="hidden" name="property_id" value="<?php echo $row['property_id']; ?>">
+                                        <input type="hidden" name="property_id" value="<?php echo $property_id; ?>">
                                         <button type="submit" class="rent-btn">Apply for Tenant</button>
                                     </form>
                                 <?php else: ?>
                                     <p><em>You have already applied.</em></p>
+                                    <a href="chat.php?property_id=<?php echo $property_id; ?>&receiver_id=<?php echo $owner_id; ?>" class="chat-btn">Chat with Owner</a>
                                 <?php endif; ?>
                             <?php endif; ?>
                         <?php endif; ?>
