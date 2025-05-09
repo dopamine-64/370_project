@@ -38,11 +38,45 @@ $result = $conn->query($sql);
             z-index: -1;
         }
 
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 14px 20px;
+            display: flex;
+           
+            gap: 15px;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+
+
+        .navbar a {
+            color: white;
+            background-color: #007bff;
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #0056b3;
+        }
+
         .container {
             max-width: 1100px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 80px 20px 40px;
+            position: relative;
+            z-index: 1;
         }
+
 
         h2 {
             text-align: center;
@@ -57,12 +91,13 @@ $result = $conn->query($sql);
             border: 1px solid rgba(255,255,255,0.15);
             border-radius: 20px;
             padding: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             box-shadow: 0 0 25px rgba(0,0,0,0.5);
             position: relative;
+            z-index: 1;
         }
 
         .property-image {
@@ -117,115 +152,6 @@ $result = $conn->query($sql);
             box-shadow: 0 0 10px rgba(0,0,0,0.4);
         }
 
-        .chat-dropdown {
-            position: relative;
-            display: inline-block;
-            margin-top: 10px;
-        }
-
-        .chat-dropbtn {
-            background-color: rgba(0, 123, 255, 0.8);
-            color: white;
-            padding: 10px 18px;
-            font-size: 15px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            backdrop-filter: blur(6px);
-            transition: background-color 0.3s ease;
-        }
-
-        .chat-dropbtn:hover {
-            background-color: rgba(0, 123, 255, 1);
-        }
-
-        .chat-dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            min-width: 220px;
-            border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            z-index: 1;
-            margin-top: 8px;
-        }
-
-        .chat-dropdown-content a {
-            color: black;
-            padding: 10px 15px;
-            text-decoration: none;
-            display: block;
-            font-size: 14px;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
-
-        .chat-dropdown-content a:last-child {
-            border-bottom: none;
-        }
-
-        .chat-dropdown-content a:hover {
-            background-color: rgba(0, 123, 255, 0.15);
-            color: #007bff;
-        }
-
-        .chat-dropdown:hover .chat-dropdown-content {
-            display: block;
-        }
-
-        .dropdown-container {
-            position: relative;
-            display: inline-block;
-            margin-top: 15px;
-        }
-
-        .dropdown-toggle {
-            background-color: #6c63ff;
-            color: white;
-            padding: 12px 18px;
-            font-size: 14px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            font-weight: bold;
-        }
-
-        .dropdown-toggle:hover {
-            background-color: #554dff;
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            background-color: rgba(255, 255, 255, 0.95);
-            min-width: 220px;
-            border-radius: 8px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            z-index: 1;
-            top: 100%;
-            left: 0;
-            overflow: hidden;
-        }
-
-        .dropdown-menu a {
-            color: #333;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            transition: background 0.2s ease;
-        }
-
-        .dropdown-menu a:hover {
-            background-color: #eee;
-        }
-
-        .dropdown-container:hover .dropdown-menu {
-            display: block;
-        }
-
-
-
         .status.active { background: #28a745; }
         .status.pending { background: #ffc107; color: #000; }
         .status.inactive { background: #dc3545; }
@@ -275,10 +201,54 @@ $result = $conn->query($sql);
             max-width: 180px;
         }
 
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .dropdown-button {
+            background-color: #444;
+            color: #fff;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            max-width: 180px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+            padding: 10px 14px;
+            z-index: 999;
+        }
+
+        .dropdown-content a {
+            color: #fff;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid #555;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #555;
+        }
+
         @media screen and (max-width: 768px) {
             .property-card { flex-direction: column; align-items: center; }
             .property-image { max-width: 100%; }
             .button-group { flex-direction: column; align-items: stretch; }
+            .navbar { justify-content: center; flex-wrap: wrap; }
         }
     </style>
     <script>
@@ -287,9 +257,34 @@ $result = $conn->query($sql);
                 form.submit();
             }
         }
+
+        function toggleDropdown(id) {
+            const dropdowns = document.querySelectorAll('.dropdown-content');
+            dropdowns.forEach(d => {
+                if (d.id === id) {
+                    d.style.display = (d.style.display === 'block') ? 'none' : 'block';
+                } else {
+                    d.style.display = 'none';
+                }
+            });
+        }
+
+        document.addEventListener('click', function(event) {
+            const isDropdownBtn = event.target.classList.contains('dropdown-button');
+            const isInsideDropdown = event.target.closest('.dropdown-container');
+            if (!isDropdownBtn && !isInsideDropdown) {
+                document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = 'none');
+            }
+        });
     </script>
 </head>
 <body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <a href="dashboard.php">Dashboard</a>
+    <a href="post_property.php">Post Property</a>
+</div>
 
 <div class="container">
     <h2>Available Properties</h2>
@@ -320,40 +315,21 @@ $result = $conn->query($sql);
                     <?php endif; ?>
                 </div>
                 <div class="property-details">
-                    <div>
-                        <h3><?php echo htmlspecialchars($row['title']); ?></h3>
-                        <p><?php echo nl2br(htmlspecialchars($row['description'])); ?></p>
-                        <p><strong>Address:</strong> <?php echo htmlspecialchars($row['address']); ?></p>
-                        <p class="rent"><strong>Rent:</strong> BDT <?php echo number_format($row['rent']); ?></p>
-                        <p><strong>Available From:</strong> <?php echo htmlspecialchars($row['available_from']); ?></p>
-                        <p><strong>Posted By:</strong> <?php echo htmlspecialchars($row['posted_by']); ?></p>
-                        <p><strong>Posted On:</strong> <?php echo date('F j, Y', strtotime($row['posted_on'])); ?></p>
+                    <h3><?php echo htmlspecialchars($row['title']); ?></h3>
+                    <p><?php echo nl2br(htmlspecialchars($row['description'])); ?></p>
+                    <p><strong>Address:</strong> <?php echo htmlspecialchars($row['address']); ?></p>
+                    <p class="rent"><strong>Rent:</strong> BDT <?php echo number_format($row['rent']); ?></p>
+                    <p><strong>Available From:</strong> <?php echo htmlspecialchars($row['available_from']); ?></p>
+                    <p><strong>Posted By:</strong> <?php echo htmlspecialchars($row['posted_by']); ?></p>
+                    <p><strong>Posted On:</strong> <?php echo date('F j, Y', strtotime($row['posted_on'])); ?></p>
 
-                        <div class="status <?php echo $status; ?>">
-                            <?php echo ucfirst($status); ?>
-                        </div>
+                    <div class="status <?php echo $status; ?>">
+                        <?php echo ucfirst($status); ?>
                     </div>
 
                     <div class="button-group">
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <?php if ($_SESSION['user_id'] == $owner_id): ?>
-                                <?php
-                                $app_result->data_seek(0);
-                                if ($app_result->num_rows > 0): ?>
-                                    <div class="dropdown-container">
-                                        <button class="dropdown-toggle">Chat with Applicants ▾</button>
-                                        <div class="dropdown-menu">
-                                            <?php while ($app = $app_result->fetch_assoc()): ?>
-                                                <a href="chat.php?property_id=<?php echo $property_id; ?>&receiver_id=<?php echo $app['user_id']; ?>">
-                                                    <?php echo htmlspecialchars($app['name']) . " ({$app['user_id']})"; ?>
-                                                </a>
-                                            <?php endwhile; ?>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-
-                            <?php endif; ?>
-
                                 <a href="edit.php?property_id=<?php echo $property_id; ?>" class="edit-btn">Edit</a>
                                 <form action="delete.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this property?');" style="display:inline;">
                                     <input type="hidden" name="property_id" value="<?php echo $property_id; ?>">
@@ -367,6 +343,7 @@ $result = $conn->query($sql);
                                               WHERE booking_requests.property_id = $property_id";
                                 $app_result = $conn->query($app_query);
                                 ?>
+
                                 <?php if ($status !== 'inactive' && $app_result->num_rows > 0): ?>
                                     <form method="POST" action="confirm_applicant.php" onsubmit="event.preventDefault(); confirmTenantSelection(this);">
                                         <input type="hidden" name="property_id" value="<?php echo $property_id; ?>">
@@ -380,29 +357,26 @@ $result = $conn->query($sql);
                                         </select>
                                         <button type="submit" class="rent-btn">Confirm Tenant</button>
                                     </form>
-                                    <?php if ($status !== 'inactive' && $app_result->num_rows > 0): ?>
-                                        <div class="chat-dropdown">
-                                            <button class="chat-dropbtn">Chat with Applicants ⬇</button>
-                                            <div class="chat-dropdown-content">
-                                                <?php
-                                                $app_result->data_seek(0); 
-                                                while ($app = $app_result->fetch_assoc()):
-                                                ?>
-                                                    <a href="chat.php?property_id=<?php echo $property_id; ?>&receiver_id=<?php echo $app['user_id']; ?>">
-                                                        <?php echo htmlspecialchars($app['name']) . " ({$app['user_id']})"; ?>
-                                                    </a>
-                                                <?php endwhile; ?>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
 
+                                    <div class="dropdown-container">
+                                        <button class="dropdown-button" onclick="toggleDropdown('dropdown-<?php echo $property_id; ?>')">Chat with Applicants</button>
+                                        <div id="dropdown-<?php echo $property_id; ?>" class="dropdown-content">
+                                            <?php
+                                            $app_result->data_seek(0);
+                                            while ($app = $app_result->fetch_assoc()):
+                                            ?>
+                                                <a href="chat.php?property_id=<?php echo $property_id; ?>&receiver_id=<?php echo $app['user_id']; ?>">
+                                                    <?php echo htmlspecialchars($app['name']) . " ({$app['user_id']})"; ?>
+                                                </a>
+                                            <?php endwhile; ?>
+                                        </div>
+                                    </div>
 
                                 <?php elseif ($status === 'inactive'): ?>
                                     <p><em>Tenant already assigned.</em></p>
                                 <?php else: ?>
                                     <p><em>No applicants yet.</em></p>
                                 <?php endif; ?>
-
                             <?php else: ?>
                                 <?php
                                 $user_id = $_SESSION['user_id'];
