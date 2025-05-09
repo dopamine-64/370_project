@@ -22,6 +22,7 @@ $sender_id = $_SESSION['user_id'];
             background: url('https://images.unsplash.com/photo-1580587771525-78b9dba3b914?fit=crop&w=1600&q=80') no-repeat center center fixed;
             background-size: cover;
             color: white;
+            overflow: hidden;
         }
 
         body::before {
@@ -36,20 +37,37 @@ $sender_id = $_SESSION['user_id'];
             z-index: -1;
         }
 
+        .back-button {
+            display: inline-block;
+            margin: 20px 0 0 20px;
+            padding: 10px 18px;
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #555;
+        }
+
         .chat-container {
-            max-width: 700px;
-            margin: 60px auto;
+            max-width: 600px;
+            margin: 30px auto;
             background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 20px;
+            padding: 15px;
+            border-radius: 16px;
             backdrop-filter: blur(6px);
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 0 20px rgba(0,0,0,0.4);
         }
 
         .chat-box {
-            height: 400px;
-            overflow-y: scroll;
+            height: 350px;
+            overflow-y: auto;
             padding: 15px;
             border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.1);
@@ -63,6 +81,8 @@ $sender_id = $_SESSION['user_id'];
             border-radius: 10px;
             max-width: 80%;
             word-wrap: break-word;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
         }
 
         .sent {
@@ -107,6 +127,7 @@ $sender_id = $_SESSION['user_id'];
     </style>
 </head>
 <body>
+<a href="view_properties.php" class="back-button">← Back to Properties</a>
 <div class="chat-container">
     <h2 style="text-align:center;">Chat</h2>
     <div class="chat-box" id="chat-box"></div>
